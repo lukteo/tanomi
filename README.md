@@ -14,7 +14,7 @@ The app aims to modernize this concept by digitalizing the process, taking a sma
 ## Technologies Used
 
 1. Landing Page - React with Astro framework
-2. Native Application - React Native w Expo framework, React Native Reusables as UI framework
+2. Native Application - React Native w Expo framework, React Native Paper as UI framework
 3. Server - Golang with PostgreSQL (pg to be setup in the near future)
 
 ## Roadmap

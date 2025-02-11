@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"tanomi/config"
+	"tanomi/internal/server"
+)
 
 func main() {
-	fmt.Println("Hello, world")
+	c := config.NewConfig()
+	s := server.NewServer(c)
+
+	s.Start()
 }

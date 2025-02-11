@@ -1,8 +1,12 @@
 package handler
 
-import "tanomi/config"
+import (
+	"tanomi/config"
+	"tanomi/generated/oapi"
+)
 
 type Handler struct {
+	oapi.StrictServerInterface
 	config *config.Config
 }
 

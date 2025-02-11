@@ -10,6 +10,7 @@ import (
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
 	"tanomi/config"
+	"tanomi/generated/oapi"
 	"tanomi/internal/server/handler"
 )
 
@@ -42,7 +43,24 @@ func NewServer(config *config.Config) *Server {
 	r.Use(chimiddleware.Recoverer)
 
 	/* -- Health -- */
-	r.Get("/health", h.GetHealth)
+	r.Get("/api/v1/health", h.GetHealth)
+
+	// TODO: Consider public routes since auth middleware should not exist
+
+	/* -- Private OAPI -- */
+	r.Group(func(r chi.Router) {
+		baseURL := "/api/v1"
+		// TODO: add necessary middleware
+
+		// TODO: add StrictHTTPServerOptions
+		strictHandler := oapi.NewStrictHandlerWithOptions(
+			h,
+			[]oapi.StrictMiddlewareFunc{},
+			oapi.StrictHTTPServerOptions{},
+		)
+
+		oapi.HandlerFromMuxWithBaseURL(strictHandler, r, baseURL)
+	})
 
 	return &Server{
 		router:   r,

@@ -1,27 +1,21 @@
 import { StyleSheet, View } from "react-native";
-import {
-  Button,
-  Card,
-  Icon,
-  MD3Colors,
-  Text,
-  TextInput,
-} from "react-native-paper";
+import { Button, Card, Icon, Text, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   return (
-    <>
+    <SafeAreaView>
       <View style={styles.container}>
         <Text variant="titleLarge">
           Search for experts to complete your everyday tasks.
         </Text>
       </View>
-      <Card>
-        <Card.Content style={styles.card}>
+      <Card style={styles.card}>
+        <Card.Content style={styles.cardContent}>
           <TextInput
             mode="outlined"
             dense
-            placeholder="Type of tasks"
+            placeholder="Type of assistance"
             left={<TextInput.Icon icon="crop" />}
           />
           <TextInput
@@ -38,38 +32,44 @@ export default function Index() {
           />
         </Card.Content>
         <Card.Actions style={styles.cardAction}>
-          <Button style={styles.cardActionButton}>Find Experts</Button>
+          <Button mode="contained" style={styles.cardActionButton}>
+            Find assistance
+          </Button>
         </Card.Actions>
       </Card>
       <View style={styles.categoryContainer}>
-        <Text variant="titleMedium">Top-searched Requests</Text>
+        <Text variant="titleMedium">Top searched requests</Text>
         <Card style={styles.categoryContainer}>
-          <Icon source="github" color={MD3Colors.error50} size={30} />
+          <Icon source="github" size={30} />
           <Text>Running errands</Text>
         </Card>
         <Card style={styles.categoryContainer}>
-          <Icon source="google" color={MD3Colors.error50} size={30} />
+          <Icon source="google" size={30} />
           <Text>Business request</Text>
         </Card>
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "flex-start",
-    backgroundColor: "#fefefefe",
     padding: 20,
   },
   card: {
+    margin: 15,
+    padding: 10,
+  },
+  cardContent: {
     gap: 20,
   },
   cardAction: {
     padding: 25,
   },
   cardActionButton: {
-    flex: 1,
+    width: "100%",
+    borderRadius: 5,
   },
   categoryContainer: {
     padding: 20,

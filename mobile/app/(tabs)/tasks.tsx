@@ -28,23 +28,27 @@ export default function Tab() {
         data={mockData}
         contentContainerStyle={{ gap: 20, padding: 10 }}
         renderItem={(item) => (
-          <Card style={styles.card} key={item.item.id}>
-            <Card.Content>
-              <Link
-                href={{
-                  pathname: "/tasks/[taskId]",
-                  params: { taskId: item.item.id },
-                }}
-              >
+          <Link
+            key={item.item.id}
+            href={{
+              pathname: "/tasks/[taskId]",
+              params: { taskId: item.item.id },
+            }}
+          >
+            <Card style={styles.card}>
+              <Card.Content>
+
                 <View>
                   <Text>{item.item.name}</Text>
                 </View>
-              </Link>
-            </Card.Content>
-          </Card>
-        )}
+              </Card.Content>
+            </Card>
+          </Link>
+
+        )
+        }
       />
-    </SafeAreaView>
+    </SafeAreaView >
   );
 }
 
@@ -54,6 +58,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   card: {
+    width: "100%",
     padding: 20,
   },
 });

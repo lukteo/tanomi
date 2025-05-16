@@ -1,86 +1,81 @@
-import { Image, Platform, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Button, Card, Icon, Text, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { Button } from "react-native-paper";
-
-export default function HomeScreen() {
+export default function Index() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it am i using this</ThemedText>
-        <Button
-          icon="camera"
-          mode="contained"
-          onPress={() => console.log("pressed")}
-        >
-          Press Me
-        </Button>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: "cmd + d",
-              android: "cmd + m",
-              web: "F12",
-            })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{" "}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <Text variant="titleLarge">
+          Search for experts to complete your everyday tasks.
+        </Text>
+      </View>
+      <Card style={styles.card}>
+        <Card.Content style={styles.cardContent}>
+          <TextInput
+            mode="outlined"
+            dense
+            placeholder="Type of assistance"
+            left={<TextInput.Icon icon="crop" />}
+          />
+          <TextInput
+            mode="outlined"
+            dense
+            placeholder="Near me"
+            left={<TextInput.Icon icon="google-drive" />}
+          />
+          <TextInput
+            mode="outlined"
+            dense
+            left={<TextInput.Icon icon="calendar" />}
+            placeholder="Date & Time"
+          />
+        </Card.Content>
+        <Card.Actions style={styles.cardAction}>
+          <Button mode="contained" style={styles.cardActionButton}>
+            Find assistance
+          </Button>
+        </Card.Actions>
+      </Card>
+      <View style={styles.categoryContainer}>
+        <Text variant="titleMedium">Top searched requests</Text>
+        <Card style={styles.categoryContainer}>
+          <Icon source="github" size={30} />
+          <Text>Running errands</Text>
+        </Card>
+        <Card style={styles.categoryContainer}>
+          <Icon source="google" size={30} />
+          <Text>Business request</Text>
+        </Card>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+  container: {
+    alignItems: "flex-start",
+    padding: 20,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  card: {
+    margin: 15,
+    padding: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+  cardContent: {
+    gap: 20,
+  },
+  cardAction: {
+    padding: 25,
+  },
+  cardActionButton: {
+    width: "100%",
+    borderRadius: 5,
+  },
+  categoryContainer: {
+    padding: 20,
+    gap: 20,
+  },
+  categoryCard: {
+    padding: 20,
   },
 });

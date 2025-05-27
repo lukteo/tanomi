@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// fallbackEnvLookup allows for declaration of fallback string, guarantees a return value
 func fallbackEnvLookup(key string, fallback string) string {
 	value, exists := os.LookupEnv(key)
 	if !exists {
@@ -14,6 +15,7 @@ func fallbackEnvLookup(key string, fallback string) string {
 	return value
 }
 
+// requiredEnvLookup requires env var to exist
 func requiredEnvLookup(key string) string {
 	value, exists := os.LookupEnv(key)
 	if !exists {

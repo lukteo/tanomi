@@ -2,7 +2,7 @@ package main
 
 import (
 	"tanomi/config"
-	"tanomi/internal/server"
+	"tanomi/internal/exec/server"
 )
 
 func main() {

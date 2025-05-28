@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	clerkhttp "github.com/clerk/clerk-sdk-go/v2/http"
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
@@ -50,12 +51,16 @@ func NewServer(config *config.Config) *Server {
 	/* -- Private OAPI -- */
 	r.Group(func(r chi.Router) {
 		baseURL := "/api/v1"
-		// TODO: add necessary middleware
+
+		// clerk auth middleware
+		r.Use(clerkhttp.RequireHeaderAuthorization())
 
 		// TODO: add StrictHTTPServerOptions
 		strictHandler := oapi.NewStrictHandlerWithOptions(
 			h,
-			[]oapi.StrictMiddlewareFunc{},
+			[]oapi.StrictMiddlewareFunc{
+				clerkhttp.RequireHeaderAuthorization,
+			},
 			oapi.StrictHTTPServerOptions{},
 		)
 

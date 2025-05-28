@@ -4,11 +4,14 @@ import (
 	"database/sql"
 
 	"tanomi/config/provider"
+
+	"github.com/clerk/clerk-sdk-go/v2/user"
 )
 
 type Config struct {
-	env *provider.EnvProvider
-	db  *sql.DB
+	env   *provider.EnvProvider
+	db    *sql.DB
+	clerk *user.Client
 }
 
 func (c *Config) Env() *provider.EnvProvider {
@@ -21,6 +24,14 @@ func (c *Config) DB() *sql.DB {
 	}
 
 	return c.db
+}
+
+func (c *Config) Clerk() *user.Client {
+	if c.clerk == nil {
+		c.clerk = provider.NewClerkProvider(c.env)
+	}
+
+	return c.clerk
 }
 
 func NewConfig() *Config {

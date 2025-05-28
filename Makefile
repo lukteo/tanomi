@@ -43,9 +43,10 @@ init-server: ## Initializes server with necessary files
 
 ##@ Generator - Commands used for code generation
 gen-oapi: ## Generates code based on OpenAPI specification
-	@echo "Generating server from OpenAPI specification..."
+	@printf "Generating server code from OpenAPI specification..."
 	@cd ./server && ./bin/oapi-codegen -config ./generated/oapi/config.yaml ../openapi.yaml
-	@printf "\033[0;32mDone.\033[0m\n"
+	@printf "\033[0;32mDone.\033[0m"
+	@printf "\n"
 
 ##@ Runners - Commands used for running scripts
 run-server: ## Starts the server

@@ -13,6 +13,7 @@ help: ## Show a list of commands
 init: ## Runs all initialization commands, recommended for setting up from scratch
 	@$(MAKE) --no-print-directory init-server-tools
 	@$(MAKE) --no-print-directory init-docker
+	@$(MAKE) --no-print-directory init-server
 
 .PHONY: init-server-tools
 init-server-tools: ## Installs server tools
@@ -31,6 +32,14 @@ init-docker: ## Initializes docker through docker-compose.yml
 	@printf "Running docker peripherals..."
 	@docker-compose up -d >/dev/null 2>&1
 	@printf "\033[0;32mDone.\033[0m"
+	@printf "\n"
+
+.PHONY: init-server
+init-server: ## Initializes server with necessary files
+	@printf "Setting up server..."
+	@cp ./server/.env.example ./server/.env
+	@printf "\033[0;32mDone.\033[0m"
+	@printf "\n"
 
 ##@ Generator - Commands used for code generation
 gen-oapi: ## Generates code based on OpenAPI specification

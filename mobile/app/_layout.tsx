@@ -2,6 +2,8 @@ import { darkTheme, lightTheme } from "@/config/theme";
 import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -13,12 +15,14 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={theme}>
-      <Stack
-        screenOptions={{
-          headerTitle: "",
-          headerShown: false,
-        }}
-      />
+      <ClerkProvider tokenCache={tokenCache}>
+        <Stack
+          screenOptions={{
+            headerTitle: "",
+            headerShown: false,
+          }}
+        />
+      </ClerkProvider>
     </PaperProvider>
   );
 }

@@ -1,11 +1,17 @@
+import { useAuth } from "@clerk/clerk-expo";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Icon, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
+  const { isSignedIn } = useAuth();
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
+        {isSignedIn ? (
+          <Text style={styles.welcomeMessage}>Welcome Authenticated User</Text>
+        ) : null}
         <Text variant="titleLarge">
           Search for experts to complete your everyday tasks.
         </Text>
@@ -53,6 +59,10 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  welcomeMessage: {
+    paddingTop: 15,
+    paddingBottom: 30,
+  },
   container: {
     alignItems: "flex-start",
     padding: 20,

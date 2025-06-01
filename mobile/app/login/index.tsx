@@ -1,10 +1,10 @@
 import { Stack } from "expo-router";
 import { StyleSheet, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { Button, TextInput, useTheme } from "react-native-paper";
 
 export default function Index() {
 
-    
+    const theme = useTheme();
 
     return (
         <View style={styles.container}>
@@ -19,10 +19,8 @@ export default function Index() {
             <Button
                 mode="contained"
                 style={styles.button}
-                // buttonColor={}
-
+                buttonColor={theme.colors.inversePrimary}
             >Google Login</Button>
-
         </View>
     )
 }
@@ -30,9 +28,9 @@ export default function Index() {
 const styles = StyleSheet.create({
     container: {
         padding: 30,
-        gap: 20
+        gap: 25
     },
     button: {
-        borderRadius: 10,
+        borderRadius: 5,
     }
 })

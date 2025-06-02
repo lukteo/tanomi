@@ -6,8 +6,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Index() {
   const { isSignedIn, user } = useUser();
 
-  console.log(user?.emailAddresses)
-
   return (
     <SafeAreaView>
       <View style={styles.container}>

@@ -7,3 +7,8 @@ export const signUpSchema = z.object({
   email: z.string().min(1, "Cannot be empty"),
   password: z.string().min(1, "Cannot be empty"),
 });
+
+export const loginSchema = z.object({
+  email: z.string().min(1, "Cannot be empty"),
+  password: z.string().min(1, "Cannot be empty"),
+});

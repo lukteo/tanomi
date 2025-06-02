@@ -1,16 +1,18 @@
-import { useAuth } from "@clerk/clerk-expo";
+import { useUser } from "@clerk/clerk-expo";
 import { StyleSheet, View } from "react-native";
 import { Button, Card, Icon, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, user } = useUser();
+
+  console.log(user?.emailAddresses)
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
         {isSignedIn ? (
-          <Text style={styles.welcomeMessage}>Welcome Authenticated User</Text>
+          <Text style={styles.welcomeMessage}>Welcome {user.fullName}</Text>
         ) : null}
         <Text variant="titleLarge">
           Search for experts to complete your everyday tasks.

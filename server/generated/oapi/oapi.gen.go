@@ -14,11 +14,14 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	strictnethttp "github.com/oapi-codegen/runtime/strictmiddleware/nethttp"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-// Pong defines model for Pong.
-type Pong struct {
-	Ping string `json:"ping"`
+// User defines model for User.
+type User struct {
+	Email *openapi_types.Email `json:"email,omitempty"`
+	Id    *string              `json:"id,omitempty"`
+	Name  *string              `json:"name,omitempty"`
 }
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
@@ -94,12 +97,12 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// GetPing request
-	GetPing(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetMeDetails request
+	GetMeDetails(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetPing(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetPingRequest(c.Server)
+func (c *Client) GetMeDetails(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMeDetailsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -110,8 +113,8 @@ func (c *Client) GetPing(ctx context.Context, reqEditors ...RequestEditorFn) (*h
 	return c.Client.Do(req)
 }
 
-// NewGetPingRequest generates requests for GetPing
-func NewGetPingRequest(server string) (*http.Request, error) {
+// NewGetMeDetailsRequest generates requests for GetMeDetails
+func NewGetMeDetailsRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -119,7 +122,7 @@ func NewGetPingRequest(server string) (*http.Request, error) {
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/ping")
+	operationPath := fmt.Sprintf("/me/details")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -180,18 +183,18 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// GetPingWithResponse request
-	GetPingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPingResponse, error)
+	// GetMeDetailsWithResponse request
+	GetMeDetailsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMeDetailsResponse, error)
 }
 
-type GetPingResponse struct {
+type GetMeDetailsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Pong
+	JSON200      *User
 }
 
 // Status returns HTTPResponse.Status
-func (r GetPingResponse) Status() string {
+func (r GetMeDetailsResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -199,42 +202,43 @@ func (r GetPingResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetPingResponse) StatusCode() int {
+func (r GetMeDetailsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-// GetPingWithResponse request returning *GetPingResponse
-func (c *ClientWithResponses) GetPingWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetPingResponse, error) {
-	rsp, err := c.GetPing(ctx, reqEditors...)
+// GetMeDetailsWithResponse request returning *GetMeDetailsResponse
+func (c *ClientWithResponses) GetMeDetailsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMeDetailsResponse, error) {
+	rsp, err := c.GetMeDetails(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetPingResponse(rsp)
+	return ParseGetMeDetailsResponse(rsp)
 }
 
-// ParseGetPingResponse parses an HTTP response from a GetPingWithResponse call
-func ParseGetPingResponse(rsp *http.Response) (*GetPingResponse, error) {
+// ParseGetMeDetailsResponse parses an HTTP response from a GetMeDetailsWithResponse call
+func ParseGetMeDetailsResponse(rsp *http.Response) (*GetMeDetailsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetPingResponse{
+	response := &GetMeDetailsResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Pong
+		var dest User
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
 		response.JSON200 = &dest
+
 	}
 
 	return response, nil
@@ -242,16 +246,18 @@ func ParseGetPingResponse(rsp *http.Response) (*GetPingResponse, error) {
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// (GET /ping)
-	GetPing(w http.ResponseWriter, r *http.Request)
+	// Get current user details
+	// (GET /me/details)
+	GetMeDetails(w http.ResponseWriter, r *http.Request)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
 
 type Unimplemented struct{}
 
-// (GET /ping)
-func (_ Unimplemented) GetPing(w http.ResponseWriter, r *http.Request) {
+// Get current user details
+// (GET /me/details)
+func (_ Unimplemented) GetMeDetails(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -264,10 +270,11 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// GetPing operation middleware
-func (siw *ServerInterfaceWrapper) GetPing(w http.ResponseWriter, r *http.Request) {
+// GetMeDetails operation middleware
+func (siw *ServerInterfaceWrapper) GetMeDetails(w http.ResponseWriter, r *http.Request) {
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetPing(w, r)
+		siw.Handler.GetMeDetails(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -391,37 +398,45 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/ping", wrapper.GetPing)
+		r.Get(options.BaseURL+"/me/details", wrapper.GetMeDetails)
 	})
 
 	return r
 }
 
-type GetPingRequestObject struct{}
-
-type GetPingResponseObject interface {
-	VisitGetPingResponse(w http.ResponseWriter) error
+type GetMeDetailsRequestObject struct {
 }
 
-type GetPing200JSONResponse Pong
+type GetMeDetailsResponseObject interface {
+	VisitGetMeDetailsResponse(w http.ResponseWriter) error
+}
 
-func (response GetPing200JSONResponse) VisitGetPingResponse(w http.ResponseWriter) error {
+type GetMeDetails200JSONResponse User
+
+func (response GetMeDetails200JSONResponse) VisitGetMeDetailsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-// StrictServerInterface represents all server handlers.
-type StrictServerInterface interface {
-	// (GET /ping)
-	GetPing(ctx context.Context, request GetPingRequestObject) (GetPingResponseObject, error)
+type GetMeDetails401Response struct {
 }
 
-type (
-	StrictHandlerFunc    = strictnethttp.StrictHTTPHandlerFunc
-	StrictMiddlewareFunc = strictnethttp.StrictHTTPMiddlewareFunc
-)
+func (response GetMeDetails401Response) VisitGetMeDetailsResponse(w http.ResponseWriter) error {
+	w.WriteHeader(401)
+	return nil
+}
+
+// StrictServerInterface represents all server handlers.
+type StrictServerInterface interface {
+	// Get current user details
+	// (GET /me/details)
+	GetMeDetails(ctx context.Context, request GetMeDetailsRequestObject) (GetMeDetailsResponseObject, error)
+}
+
+type StrictHandlerFunc = strictnethttp.StrictHTTPHandlerFunc
+type StrictMiddlewareFunc = strictnethttp.StrictHTTPMiddlewareFunc
 
 type StrictHTTPServerOptions struct {
 	RequestErrorHandlerFunc  func(w http.ResponseWriter, r *http.Request, err error)
@@ -449,23 +464,23 @@ type strictHandler struct {
 	options     StrictHTTPServerOptions
 }
 
-// GetPing operation middleware
-func (sh *strictHandler) GetPing(w http.ResponseWriter, r *http.Request) {
-	var request GetPingRequestObject
+// GetMeDetails operation middleware
+func (sh *strictHandler) GetMeDetails(w http.ResponseWriter, r *http.Request) {
+	var request GetMeDetailsRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetPing(ctx, request.(GetPingRequestObject))
+		return sh.ssi.GetMeDetails(ctx, request.(GetMeDetailsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetPing")
+		handler = middleware(handler, "GetMeDetails")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetPingResponseObject); ok {
-		if err := validResponse.VisitGetPingResponse(w); err != nil {
+	} else if validResponse, ok := response.(GetMeDetailsResponseObject); ok {
+		if err := validResponse.VisitGetMeDetailsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

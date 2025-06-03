@@ -41,6 +41,7 @@ func NewServer(config *config.Config) *Server {
 	portAddr := fmt.Sprintf(":%s", config.Env().ServerPort())
 
 	r := chi.NewRouter()
+	r.Use(chimiddleware.Logger)
 	r.Use(chimiddleware.Recoverer)
 
 	/* -- Health -- */

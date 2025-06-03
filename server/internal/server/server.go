@@ -12,7 +12,7 @@ import (
 
 	"tanomi/config"
 	"tanomi/generated/oapi"
-	"tanomi/internal/exec/server/handler"
+	"tanomi/internal/handler"
 )
 
 type Server struct {

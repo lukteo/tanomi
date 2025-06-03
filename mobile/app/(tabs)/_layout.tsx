@@ -1,9 +1,11 @@
+import { useAuth } from "@clerk/clerk-expo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
 import { useTheme } from "react-native-paper";
 
 export default function TabLayout() {
   const theme = useTheme();
+  const { isSignedIn } = useAuth();
 
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: theme.colors.outline }}>
@@ -30,7 +32,19 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
+          href: isSignedIn ? "/profile" : null,
           title: "Profile",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={24} name="user-circle" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="login"
+        options={{
+          href: isSignedIn ? null : "/login",
+          title: "Log in",
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <FontAwesome size={24} name="user-circle" color={color} />

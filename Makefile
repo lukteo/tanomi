@@ -1,3 +1,7 @@
+define use_server_env
+	@set -o allexport; source ./server/.env; set +o allexport
+endef
+
 default: help
 
 .PHONY: help
@@ -5,7 +9,6 @@ help: ## Show a list of commands
 	@clear
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[.a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 	@echo ""
-
 
 ##@ Initialization - Helpers for project setup
 
@@ -43,11 +46,15 @@ init-server: ## Initializes server with necessary files
 
 ##@ Generator - Commands used for code generation
 gen-oapi: ## Generates code based on OpenAPI specification
-	@echo "Generating server from OpenAPI specification..."
+	@printf "Generating server code from OpenAPI specification..."
 	@cd ./server && ./bin/oapi-codegen -config ./generated/oapi/config.yaml ../openapi.yaml
-	@printf "\033[0;32mDone.\033[0m\n"
+	@printf "\033[0;32mDone.\033[0m"
+	@printf "\n"
 
 ##@ Runners - Commands used for running scripts
 run-server: ## Starts the server
-	@echo "Starting server"
-	@cd ./server && go run ./cmd/server/main.go
+	@echo "Starting server..."
+	@printf "\n"
+	@$(call use_server_env) \
+		&& cd server && \
+		go run ./cmd/server/main.go

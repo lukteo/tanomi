@@ -1,12 +1,51 @@
-import { useClerk } from "@clerk/clerk-expo";
-import { Link, useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
-import { List, MD3Colors, Text } from "react-native-paper";
+import { userUpdateSchema } from "@/schema/user";
+import { useClerk, useUser } from "@clerk/clerk-expo";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { StyleSheet, View, Alert } from "react-native";
+import {
+  ActivityIndicator,
+  Avatar,
+  Button,
+  TextInput,
+  useTheme,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Tab() {
+export default function Index() {
+  const theme = useTheme();
+
   const { signOut, isSignedIn } = useClerk();
   const router = useRouter();
+  const { user, isLoaded } = useUser();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
+    resolver: zodResolver(userUpdateSchema),
+    values: {
+      firstName: user?.firstName ?? "",
+      lastName: user?.lastName ?? "",
+      username: user?.username ?? "",
+    },
+  });
+
+  const onUpdatePress = handleSubmit(async (payload) => {
+    try {
+      user?.update({
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        username: payload.username,
+      });
+      Alert.alert("Success", "Profile has been sucessfully updated.");
+    } catch (err) {
+      Alert.alert("Error", "Something went wrong.");
+      console.error(err);
+    }
+  });
 
   const handleSignOut = async () => {
     if (!isSignedIn) return;
@@ -18,67 +57,101 @@ export default function Tab() {
       console.error(JSON.stringify(err, null, 2));
     }
   };
+  if (!isLoaded) return <ActivityIndicator animating={true} />;
 
   return (
     <SafeAreaView style={styles.container}>
-      <List.Section>
-        {!isSignedIn ? (
-          <>
-            <List.Item
-              title={() => <Link href="/login">Log in</Link>}
-              left={() => <List.Icon icon="login" />}
-            />
-            <List.Item
-              title={() => <Link href="/sign-up">Sign up</Link>}
-              left={() => (
-                <List.Icon color={MD3Colors.primary30} icon="account" />
-              )}
-            />
-          </>
-        ) : (
-          <List.Item
-            title={() => <Link href="/profile/edit">Edit Profile</Link>}
-            left={() => (
-              <List.Icon color={MD3Colors.primary30} icon="account-circle" />
-            )}
+      <Avatar.Image
+        style={styles.avatar}
+        size={80}
+        source={require("../../assets/images/react-logo.png")}
+      />
+
+      <Controller
+        name="username"
+        control={control}
+        render={({
+          field: { onChange, value, onBlur },
+          fieldState: { error },
+        }) => (
+          <TextInput
+            label="User name"
+            mode="outlined"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            error={!!error}
+            autoCapitalize="none"
+            disabled={isSubmitting}
           />
         )}
+      />
 
-        <List.Item
-          title={() => <Link href="/">Contact us</Link>}
-          left={() => <List.Icon color={MD3Colors.primary30} icon="contacts" />}
-        />
-        <List.Item
-          title={() => <Link href="/">Terms of use</Link>}
-          left={() => <List.Icon color={MD3Colors.tertiary70} icon="folder" />}
-        />
-      </List.Section>
-
-      <List.Section>
-        <List.Item
-          title={() => <Link href="/">Share Tanomi</Link>}
-          left={() => <List.Icon icon="share" />}
-        />
-        <List.Item
-          title={() => <Link href="/">Give us feedback</Link>}
-          left={() => <List.Icon color={MD3Colors.tertiary70} icon="star" />}
-        />
-      </List.Section>
-
-      {isSignedIn ? (
-        <List.Section>
-          <List.Item
-            title={() => <Text onPress={handleSignOut}>Log out</Text>}
-            left={() => <List.Icon icon="logout" />}
+      <Controller
+        name="firstName"
+        control={control}
+        render={({
+          field: { onChange, value, onBlur },
+          fieldState: { error },
+        }) => (
+          <TextInput
+            label="First name"
+            mode="outlined"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            error={!!error}
+            autoCapitalize="none"
+            disabled={isSubmitting}
           />
-        </List.Section>
-      ) : null}
+        )}
+      />
+
+      <Controller
+        name="lastName"
+        control={control}
+        render={({
+          field: { onChange, value, onBlur },
+          fieldState: { error },
+        }) => (
+          <TextInput
+            label="First name"
+            mode="outlined"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            error={!!error}
+            autoCapitalize="none"
+            disabled={isSubmitting}
+          />
+        )}
+      />
+
+      <Button
+        mode="contained"
+        style={styles.button}
+        buttonColor={theme.colors.inverseSurface}
+        onPress={onUpdatePress}
+        disabled={isSubmitting}
+      >
+        Update
+      </Button>
+
+      <Button onPress={handleSignOut}>Log out</Button>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingTop: 50,
+    padding: 30,
+    gap: 25,
+  },
+  button: {
+    borderRadius: 5,
+  },
+  avatar: {
+    margin: "auto",
   },
 });

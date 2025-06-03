@@ -37,7 +37,7 @@ export default function Tab() {
           </>
         ) : (
           <List.Item
-            title={() => <Link href="/sign-up">Edit Profile</Link>}
+            title={() => <Link href="/profile/edit">Edit Profile</Link>}
             left={() => (
               <List.Icon color={MD3Colors.primary30} icon="account-circle" />
             )}

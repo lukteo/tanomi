@@ -1,9 +1,16 @@
 import { darkTheme, lightTheme } from "@/config/theme";
-import { Stack } from "expo-router";
-import { useColorScheme } from "react-native";
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
-import { ClerkProvider } from "@clerk/clerk-expo";
+import { SplashScreen, Stack, useRouter } from "expo-router";
+import { TouchableOpacity, useColorScheme } from "react-native";
+import {
+  MD3DarkTheme,
+  MD3LightTheme,
+  PaperProvider,
+  Text,
+} from "react-native-paper";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,13 +23,63 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={theme}>
       <ClerkProvider tokenCache={tokenCache}>
-        <Stack
-          screenOptions={{
-            headerTitle: "",
-            headerShown: false,
-          }}
-        />
+        <RootStack />
       </ClerkProvider>
     </PaperProvider>
+  );
+}
+
+function RootStack() {
+  const router = useRouter();
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) return null;
+
+  return (
+    <Stack>
+      <Stack.Screen
+        name="(modals)/login"
+        options={{
+          presentation: "modal",
+          title: "Log in",
+          headerBackButtonMenuEnabled: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text>Close</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+      <Stack.Protected guard={isSignedIn}>
+        <Stack.Screen
+          name="profile/edit"
+          options={{
+            headerShown: true,
+            title: "Edit Profile",
+            headerBackTitle: "Back",
+          }}
+        />
+      </Stack.Protected>
+
+      <Stack.Screen
+        name="sign-up/index"
+        options={{
+          headerShown: true,
+          headerTitle: "Sign up",
+          headerBackTitle: "Back",
+        }}
+      />
+
+      <Stack.Screen
+        name="tasks/[taskId]"
+        options={{
+          headerShown: true,
+          headerTitle: "Task",
+        }}
+      />
+    </Stack>
   );
 }

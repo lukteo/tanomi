@@ -2,7 +2,7 @@ import { PasswordTextInput } from "@/components/PasswordTextInput";
 import { loginSchema } from "@/schema/user";
 import { useSignIn } from "@clerk/clerk-expo";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, useTheme } from "react-native-paper";
@@ -43,8 +43,6 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ headerShown: true }} />
-
       <Controller
         name="email"
         control={formMethods.control}

@@ -1,19 +1,18 @@
 import { userUpdateSchema } from "@/schema/user";
 import { useUser } from "@clerk/clerk-expo";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Stack } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, Alert } from "react-native";
 import {
   ActivityIndicator,
   Button,
   TextInput,
   useTheme,
 } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const theme = useTheme();
-
   const { user, isLoaded } = useUser();
 
   const {
@@ -46,9 +45,7 @@ export default function Index() {
   if (!isLoaded) return <ActivityIndicator animating={true} />;
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ headerShown: true }} />
-
+    <SafeAreaView style={styles.container}>
       <Controller
         name="username"
         control={control}
@@ -97,7 +94,7 @@ export default function Index() {
           fieldState: { error },
         }) => (
           <TextInput
-            label="First name"
+            label="Last name"
             mode="outlined"
             onBlur={onBlur}
             onChangeText={onChange}
@@ -118,7 +115,7 @@ export default function Index() {
       >
         Update
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }
 

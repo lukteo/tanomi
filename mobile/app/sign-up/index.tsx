@@ -70,7 +70,6 @@ export default function Index() {
   if (pendingVerification) {
     return (
       <View style={styles.container}>
-        <Stack.Screen options={{ headerShown: true }} />
         <TextInput
           value={code}
           mode="outlined"
@@ -91,7 +90,6 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ headerShown: true }} />
       <Controller
         name="email"
         control={formMethods.control}

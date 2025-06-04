@@ -1,4 +1,5 @@
 import { darkTheme, lightTheme } from "@/config/theme";
+import { useFonts } from "expo-font";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { TouchableOpacity, useColorScheme } from "react-native";
 import {
@@ -9,16 +10,34 @@ import {
 } from "react-native-paper";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
+import { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  
+  const [loaded] = useFonts({
+    mon: require("../assets/fonts/Montserrat-Regular.ttf"),
+    "mon-sb": require("../assets/fonts/Montserrat-SemiBold.ttf"),
+    "mon-b": require("../assets/fonts/Montserrat-Bold.ttf"),
+  });
+
   const colorScheme = useColorScheme();
 
   const theme =
     colorScheme === "dark"
       ? { ...MD3DarkTheme, colors: darkTheme.colors }
       : { ...MD3LightTheme, colors: lightTheme.colors };
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
     <PaperProvider theme={theme}>
